@@ -2,25 +2,7 @@
 import sys
 import pygame
 from settings import Settings
-
-class Ship:
-    """A class to manage the ship."""
-
-    def __init__(self,ai_game):
-        """Initialize the ship and set its starting position"""
-        self.screen = ai_game.screen
-        self.screen_rect = ai_game.screen.get_rect()
-
-        #Load the shipe image and get its rect.
-        self.image = pygame.image.laod('images/ship.bmp')
-        self.rect = self.image.get_rect()
-
-        #start each new ship at the bottom center of the screen.
-        self.rect.midbottom = self.screen_rect.midbottom
-
-    def blitme(self):
-        """Draw the ship at its current location."""
-        self.screen.blit(self.image, self.rect)
+from ship import Ship
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -36,6 +18,8 @@ class AlienInvasion:
         self.screen = pygame.display.set_mode((1200,800))
         pygame.display.set_caption("Alien Invasion")
 
+        self.ship = Ship(self)
+
         #set the background color
         self.bg_color = (230,230,230)
 
@@ -48,6 +32,7 @@ class AlienInvasion:
                     sys.exit()
             #redraw the screen during each pass through the loop
             self.screen.fill(self.settings.bg_color)
+            self.ship.blitme()
 
             #make the most recently drawn screen visible
             pygame.display.flip()
