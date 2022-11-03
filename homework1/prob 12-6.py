@@ -56,9 +56,9 @@ class AlienInvasion:
     def _check_keydown_events(self, event):
         """Respond to key presses"""
         if event.key == pygame.K_RIGHT:
-            self.ship.moving_right = True
+            self.ship.moving_up = True
         elif event.key == pygame.K_LEFT:
-            self.ship.moving_left = True
+            self.ship.moving_down = True
         elif event.key == pygame.K_q:
             sys.exit()
         elif event.key == pygame.K_SPACE:
@@ -67,9 +67,9 @@ class AlienInvasion:
     def _check_keyup_events(self, event):
         """Respond to key releases"""
         if event.key == pygame.K_RIGHT:
-            self.ship.moving_right = False
+            self.ship.moving_up = False
         elif event.key == pygame.K_LEFT:
-            self.ship.moving_left = False
+            self.ship.moving_down = False
 
 
     def _fire_bullet(self):
@@ -102,25 +102,25 @@ class Ship:
         self.rect = self.image.get_rect()
 
         #start each new ship at the bottom center of the screen.
-        self.rect.midbottom = self.screen_rect.midbottom
+        self.rect.midright = self.screen_rect.midright
 
-        #Store a decimal value for the ships horizontal position.
-        self.x = float(self.rect.x)
+        #Store a decimal value for the ships VERTICAL position.
+        self.y = float(self.rect.y)
 
         #Movement flag
-        self.moving_right = False
-        self.moving_left = False
+        self.moving_up = False
+        self.moving_down = False
 
     def update(self):
         """Update the ship's position based on movement flags"""
         #Update the ships x value not the rect
-        if self.moving_right and self.rect.right < self.screen_rect.right:
-            self.x += self.settings.ship_speed
-        if self.moving_left and self.rect.left > 0:
-            self.x -= self.settings.ship_speed
+        if self.moving_up and self.rect.top > self.screen_rect.top:
+            self.y -= self.settings.ship_speed
+        if self.moving_down and self.rect.bottom > 0:
+            self.y += self.settings.ship_speed
 
-        #Update rect object from self.x
-        self.rect.x = self.x
+        #Update rect object from self.y
+        self.rect.y = self.y
 
 
     def blitme(self):
@@ -159,17 +159,17 @@ class Bullet(Sprite):
 
         #create a bultte rect at (0, 0) and then set correct position.
         self.rect = pygame.Rect(0, 0, self.settings.bullet_width, self.settings.bullet_height)
-        self.rect.midtop = ai_game.ship.rect.midtop
+        self.rect.midleft = ai_game.ship.rect.midleft
 
         #Store the bullets position as a decimal value
-        self.y = float(self.rect.y)
+        self.x = float(self.rect.x)
 
     def update(self):
         """Move the bullet up the screen."""
         #Update the decimal position of the bullet
-        self.y -= self.settings.bullet_speed
+        self.x -= self.settings.bullet_speed
         #update rect position
-        self.rect.y = self.y
+        self.rect.x = self.x
 
     def draw_bullet(self):
         """Draw the bullet to the screen"""
