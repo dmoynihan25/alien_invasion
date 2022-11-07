@@ -33,6 +33,9 @@ class AlienInvasion:
         #set the background color
         self.bg_color = (230,230,230)
 
+        #start alien invasion in an active stat
+        self.game_active = True
+
     def run_game(self):
         """Start the main loop for the game."""
         while True:
@@ -50,6 +53,9 @@ class AlienInvasion:
         #look for alien-ship collision
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
+
+        #look for aliens hitting the bottom of the screen
+        self._check_aliens_bottom()
 
     def _update_bullets(self):
         """Update position of bullets and get rid of old bullets."""
@@ -165,6 +171,16 @@ class AlienInvasion:
 
         #pause
         sleep(0.5)
+
+    def _check_aliens_bottom(self):
+        """Check if any aliens have reached the bottom of the screen"""
+        screen_rect = self.screen.get_rect()
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= screen_rect.bottom:
+                #treat this as the same as if the ship was hit
+                self._ship_hit()
+                break
+
 
 
 
