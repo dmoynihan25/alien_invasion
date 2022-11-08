@@ -22,11 +22,7 @@ class StarInvasion:
         #set the background color
         self.bg_color = (230,0,0)
 
-    def run_game(self):
-        """Start the main loop for the game."""
-        self.screen.fill(self.bg_color)
-        self._create_fleet()
-        pygame.display.flip()
+
 
     def _create_fleet(self):
         """Make a fleet of aliens"""
@@ -43,7 +39,7 @@ class StarInvasion:
 
         # create the full fleet of aliens
         for row_number in range(number_rows):
-            for alien_number in range(number_stars_x):
+            for star_number in range(number_stars_x):
                 self._create_star(star_number, row_number)
 
     def _create_star(self, star_number, row_number):
@@ -54,6 +50,12 @@ class StarInvasion:
         star.rect.x = star.x
         star.rect.y = star.rect.height + 2 * star.rect.height * row_number
         self.stars.add(star)
+
+    def run_game(self):
+        """Start the main loop for the game."""
+        self.screen.fill(self.bg_color)
+        self._create_fleet()
+        pygame.display.flip()
 
 
 class Star(Sprite):

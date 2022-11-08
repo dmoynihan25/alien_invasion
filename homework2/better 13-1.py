@@ -1,52 +1,111 @@
-# Game Character: Find a bitmap image of a game character you like or convert an image to a bitmap. Make a class that draws the character at the center of the screen and match the background color of the image to the background color of the screen or vice versa
+#This is Dennis's Pygame
+import sys
 import pygame
 from time import sleep
-import sys
+from pygame.sprite import Sprite
 
-image = pygame.image.load('images/star.png')
-image_rect = image.get_rect()
-class Star_Invasion():
+class AlienInvasion:
+    """Overall class to manage game assets and behavior."""
+
     def __init__(self):
+        """Initilize the game and create game resources."""
         pygame.init()
-        self.bg_color = (0, 0, 230)
+        self.settings = Settings()
 
-        self.screen = pygame.display.set_mode((1600,800))
-        pygame.display.set_caption("Star Invasion")
+        self.screen = pygame.display.set_mode((0, 0 ), pygame.FULLSCREEN)
+        self.settings.screen_width = self.screen.get_rect().width
+        self.settings.screen_height = self.screen.get_rect().height
+        pygame.display.set_caption("Alien Invasion")
+
+        self.aliens = pygame.sprite.Group()
+
+        self._create_fleet()
+
+        #set the background color
+        self.bg_color = (230,230,230)
+
+
+
+    def run_game(self):
+        """Start the main loop for the game."""
+        self._check_events()
+        self._update_screen()
 
     def _create_fleet(self):
         """Make a fleet of aliens"""
         #create and alien and find the number of aliens in a row
         #spacing bewtween each alien is eqaul to one alien width
         alien = Alien(self)
-        star_width, star_height = star.rect.size
-        available_space_x = self.screen_width - (2 * star_width)
-        number_star_x = available_space_x // (2 * star_width)
+        alien_width, alien_height = alien.rect.size
+        available_space_x = self.settings.screen_width - (2 * alien_width)
+        number_aliens_x = available_space_x // (2 * alien_width)
 
         #determine the number of row of aliens that fit on the screen
-        available_space_y = (self.screen_height - (3 * star_height))
-        number_rows = available_space_y // (2 * star_height)
+        available_space_y = (self.settings.screen_height - (3 * alien_height))
+        number_rows = available_space_y // (2 * alien_height)
 
-        #create the full fleet of stars
+        #create the full fleet of aliens
         for row_number in range(number_rows):
-            for alien_number in range(number_star_x):
-                self._create_star(star_number, row_number)
+            for alien_number in range(number_aliens_x):
+                self._create_alien(alien_number, row_number)
 
 
-    def _create_star(self, alien_number, row_number):
+    def _create_alien(self, alien_number, row_number):
         """create an alien and place it in a row"""
-        star = Star(self)
-        star_width, star_height = star.rect.size
-        star.x = star_width + 2 * star_width * star_number
-        star.rect.x = star.x
-        star.rect.y = star.rect.height + 2 * star.rect.height * row_number
-        self.stars.add(star)
+        alien = Alien(self)
+        alien_width, alien_height = alien.rect.size
+        alien.x = alien_width + 2 * alien_width * alien_number
+        alien.rect.x = alien.x
+        alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
+        self.aliens.add(alien)
 
-    def run_game(self):
-        self.screen.fill(self.bg_color)
-        self.screen.blit(image, image_rect)
+    def _check_events(self):
+        """Respond to key presses and mouse events"""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+    def _update_screen(self):
+        """Update images on the screen, and then flip the new screen."""
+        self.screen.fill(self.settings.bg_color)
+        self.aliens.draw(self.screen)
+
         pygame.display.flip()
-if __name__ == '__main__':
-    si = Star_Invasion()
-    si.run_game()
 
-sleep(5)
+class Alien(Sprite):
+    """A class to represent a single alien in the fleet"""
+
+    def __init__(self, ai_game):
+        """Initialize the alien and set its starting position"""
+        super().__init__()
+        self.screen = ai_game.screen
+        self.settings = ai_game.settings
+
+        #load the alien image and set its rect attribute
+        self.image = pygame.image.load('images/star.png')
+        self.rect = self.image.get_rect()
+
+        #start each new alien near the top left of the screen
+        self.rect.x = self.rect.width
+        self.rect.y = self.rect.height
+
+        #store the aliens exact horizontal position
+        self.x = float(self.rect.x)
+
+
+
+class Settings:
+    """A class to store all settings for Alien Invasion"""
+
+    def __init__(self):
+        """Initialize the game's settings."""
+        #Screen settings
+        self.screen_width = 1200
+        self.screen_height = 600
+        self.bg_color = (230, 230, 230)
+
+
+if __name__ == '__main__':
+    #make a game instance and run the game
+    ai = AlienInvasion()
+    ai.run_game()
