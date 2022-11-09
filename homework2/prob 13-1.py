@@ -1,7 +1,7 @@
 import pygame
-import sys
 from pygame.sprite import Sprite
 from time import sleep
+import sys
 
 
 class StarInvasion:
@@ -51,11 +51,19 @@ class StarInvasion:
         star.rect.y = star.rect.height + 2 * star.rect.height * row_number
         self.stars.add(star)
 
+    def _update_screen(self):
+        """Update images on the screen, and then flip the new screen."""
+        self.screen.fill(self.bg_color)
+        self.stars.draw(self.screen)
+
+        pygame.display.flip()
+
+
     def run_game(self):
         """Start the main loop for the game."""
         self.screen.fill(self.bg_color)
         self._create_fleet()
-        pygame.display.flip()
+        self._update_screen()
 
 
 class Star(Sprite):
@@ -67,7 +75,8 @@ class Star(Sprite):
         self.screen = si_game.screen
 
         #load the alien image and set its rect attribute
-        self.image = pygame.image.load('images/star.png')
+        self.image = pygame.image.load('images/star2.png')
+        self.image = pygame.transform.rotozoom(self.image, 0, 0.1)
         self.rect = self.image.get_rect()
 
         #start each new alien near the top left of the screen
