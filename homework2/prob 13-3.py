@@ -22,6 +22,16 @@ class StarInvasion:
         #set the background color
         self.bg_color = (230,0,0)
 
+    def _check_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit
+            elif event.type == pygame.KEYDOWN:
+                self._check_keydown_events()
+    def _check_keydown_events(self, events):
+        if event.key == pygame.K_q:
+            sys.exit()
+
 
 
     def _create_fleet(self):
@@ -58,12 +68,20 @@ class StarInvasion:
 
         pygame.display.flip()
 
+    def update(self):
+        """Move the drop to the right or left"""
+        self.star.y += (self.settings.raindrop_speed * self.settings.raindrop_direction)
+        self.star.rect.y = self.star.y
+
 
     def run_game(self):
         """Start the main loop for the game."""
         self.screen.fill(self.bg_color)
         self._create_fleet()
         self._update_screen()
+        self._check_events()
+        self.update()
+
 
 
 class Star(Sprite):
@@ -76,7 +94,7 @@ class Star(Sprite):
 
         #load the alien image and set its rect attribute
         self.image = pygame.image.load('images/raindrop.png')
-        self.image = pygame.transform.rotozoom(self.image, 0, 0.1)
+        self.image = pygame.transform.rotozoom(self.image, 0, 1.5)
         self.rect = self.image.get_rect()
 
         #start each new alien near the top left of the screen
@@ -85,6 +103,13 @@ class Star(Sprite):
 
         #store the aliens exact horizontal position
         self.x = float(self.rect.x)
+
+
+
+class Settings:
+    def __init__(self):
+        self.raindrop_speed = 1.5
+        self.raindrop_direction = -1
 
 
 if __name__ == '__main__':

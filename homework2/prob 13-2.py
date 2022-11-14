@@ -94,7 +94,6 @@ class Star(Sprite):
 
 
 if __name__ == '__main__':
-    #make a game instance and run the game
     si = StarInvasion()
     si.run_game()
 
