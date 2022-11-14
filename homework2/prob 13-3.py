@@ -8,7 +8,7 @@ class StarInvasion:
     def __init__(self):
         """Initilize the game and create game resources."""
         pygame.init()
-
+        self.raindrops = Raindrop()
         self.screen = pygame.display.set_mode((0, 0 ), pygame.FULLSCREEN)
         self.screen_width = self.screen.get_rect().width
         self.screen_height = self.screen.get_rect().height
@@ -68,10 +68,6 @@ class StarInvasion:
 
         pygame.display.flip()
 
-    def update(self):
-        """Move the drop to the right or left"""
-        self.star.y += (self.settings.raindrop_speed * self.settings.raindrop_direction)
-        self.star.rect.y = self.star.y
 
 
     def run_game(self):
@@ -80,8 +76,7 @@ class StarInvasion:
         self._create_fleet()
         self._update_screen()
         self._check_events()
-        self.update()
-
+        self.raindrops.update()
 
 
 class Star(Sprite):
@@ -111,11 +106,41 @@ class Settings:
         self.raindrop_speed = 1.5
         self.raindrop_direction = -1
 
+class Raindrop(Sprite):
+    """A class to represent a single raindrop."""
+
+    def __init__(self, si_game):
+        """Initialize the raindrop and set its starting position."""
+        super().__init__()
+        self.screen = si_game.screen
+        self.settings = si_game.settings
+
+        self.image = pygame.image.load('images/raindrop.png')
+        self.rect = self.image.get_rect()
+
+        # Start each new raindrop near the top left of the screen.
+        self.rect.x = self.rect.width
+        self.rect.y = self.rect.height
+
+        # Store the raindrop's exact vertical position.
+        self.y = float(self.rect.y)
+
+    def check_disappeared(self):
+        """Check if drop has disappeared off bottom of screen."""
+        if self.rect.top > self.screen.get_rect().bottom:
+            return True
+        else:
+            return False
+
+    def update(self):
+        """Move the raindrop down the screen."""
+        self.y += self.settings.raindrop_speed
+        self.rect.y = self.y
 
 if __name__ == '__main__':
     #make a game instance and run the game
-    si = StarInvasion()
-    si.run_game()
+    si_game = StarInvasion()
+    si_game.run_game()
 
 sleep(5)
 
